@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import SortableTree, { toggleExpandedForAll } from 'react-sortable-tree';
-import FileExplorerTheme from '../index';
+import SidePanelTheme from '../index';
 import './app.css';
 
 class App extends Component {
@@ -12,41 +12,36 @@ class App extends Component {
       searchFocusIndex: 0,
       searchFoundCount: null,
       treeData: [
-        { title: '.gitignore' },
-        { title: 'package.json' },
-        {
-          title: 'src',
+        { title: 'Favorites',
           isDirectory: true,
-          expanded: true,
+          dragDisabled: true,
           children: [
-            { title: 'styles.css' },
-            { title: 'index.js' },
-            { title: 'reducers.js' },
-            { title: 'actions.js' },
-            { title: 'utils.js' },
+            { title: 'All Errors', canDrop: false },
+            { title: 'Uncauaght', canDrop: false },
+            { title: 'Swallowed' },            
+            { title: 'New This Week' },            
+            { title: 'Recent Deployment' },            
+
+       ] },
+        {
+          title: 'Logs',
+          isDirectory: true,
+          dragDisabled: true,
+          children: [
+            { title: 'info' },
+            { title: 'warnings' },
+            { title: 'errors' },
           ],
         },
         {
-          title: 'tmp',
+          title: 'Exceptions',
+          dragDisabled: true,
           isDirectory: true,
           children: [
-            { title: '12214124-log' },
-            { title: 'drag-disabled-file', dragDisabled: true },
+            { title: 'stack overflow' },
+            { title: 'null reference' },
           ],
-        },
-        {
-          title: 'build',
-          isDirectory: true,
-          children: [{ title: 'react-sortable-tree.js' }],
-        },
-        {
-          title: 'public',
-          isDirectory: true,
-        },
-        {
-          title: 'node_modules',
-          isDirectory: true,
-        },
+        }
       ],
     };
 
@@ -118,7 +113,7 @@ class App extends Component {
         style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}
       >
         <div style={{ flex: '0 0 auto', padding: '0 15px' }}>
-          <h3>File Explorer Theme</h3>
+          <h3>Sidebar Template</h3>
           <button onClick={this.expandAll}>Expand All</button>
           <button onClick={this.collapseAll}>Collapse All</button>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -166,7 +161,7 @@ class App extends Component {
 
         <div style={{ flex: '1 0 50%', padding: '0 0 0 15px' }}>
           <SortableTree
-            theme={FileExplorerTheme}
+            theme={SidePanelTheme}
             treeData={treeData}
             onChange={this.updateTreeData}
             searchQuery={searchString}
