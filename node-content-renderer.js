@@ -12,8 +12,16 @@ function isDescendant(older, younger) {
   );
 }
 
-// eslint-disable-next-line react/prefer-stateless-function
 class FileThemeNodeContentRenderer extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      mouseInside: false
+    };
+  }
+  
+
   render() {
     const {
       scaffoldBlockPxWidth,
@@ -43,9 +51,11 @@ class FileThemeNodeContentRenderer extends Component {
       treeId, // Not needed, but preserved for other renderers
       isOver, // Not needed, but preserved for other renderers
       parentNode, // Needed for dndManager
-      ...otherProps
+      ...otherProps  
     } = this.props;
     const nodeTitle = title || node.title;
+
+    const { mouseInside } = this.state;
 
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node);
     const isLandingPadActive = !didDrop && isDragging;
@@ -92,7 +102,9 @@ class FileThemeNodeContentRenderer extends Component {
     });
 
     const nodeContent = (
-      <div style={{ height: '100%' }} {...otherProps}>
+      <div style={{ height: '100%' }} onMouseEnter={() => { this.setState({ mouseInside: true }); return console.log("node content mouse enter");}}
+        onMouseLeave={() => {  this.setState({ mouseInside: false }); return console.log("node content mouse leave"); }}
+        {...otherProps}>
         {toggleChildrenVisibility &&
           node.children &&
           node.children.length > 0 && (
@@ -167,8 +179,9 @@ class FileThemeNodeContentRenderer extends Component {
                         : nodeTitle}
                     </span>
                   </div>
-
-                  <div className={styles.rowToolbar}>
+                  
+                  {mouseInside &&
+                  <div className={styles.rowToolbar} >
                     {buttons.map((btn, index) => (
                       <div
                         key={index} // eslint-disable-line react/no-array-index-key
@@ -177,7 +190,7 @@ class FileThemeNodeContentRenderer extends Component {
                         {btn}
                       </div>
                     ))}
-                  </div>
+                  </div>}
                 </div>
               </div>
             </div>
@@ -208,6 +221,7 @@ FileThemeNodeContentRenderer.defaultProps = {
   swapLength: null,
   title: null,
   toggleChildrenVisibility: null,
+
 };
 
 FileThemeNodeContentRenderer.propTypes = {

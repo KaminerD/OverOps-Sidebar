@@ -174,7 +174,8 @@ class App extends Component {
               })}
             canDrag={({ node }) => !node.dragDisabled}
             canDrop={({ nextParent }) => !nextParent || nextParent.isDirectory}
-            generateNodeProps={rowInfo => ({
+            generateNodeProps={rowInfo => (
+              {
               icons: rowInfo.node.isDirectory
                 ? [
                     <div
@@ -217,7 +218,29 @@ class App extends Component {
                     border: 0,
                     fontWeight: 100,
                   }}
-                  onClick={() => alertNodeInfo(rowInfo)}
+                  onClick={() => {
+                    let clonedTree =treeData.slice(0);
+                    console.log(rowInfo);
+                    if (rowInfo.node.isDirectory)
+                    {
+                      console.log(treeData.length);
+                      for (let i =0; i < treeData.length; i+= 1)
+                      {
+                        const directory = clonedTree[i];
+                        console.log(directory);                        
+                        if (directory.title === rowInfo.node.title)
+                        {
+                          clonedTree.splice(i, 1);
+                          console.log("remove element")                          
+                          break;
+                        }
+                      }
+                    }
+
+                    this.setState({treeData: clonedTree})
+                    console.log(clonedTree);
+                  }}
+                  // on x click remove the element from state collection
                 >
                   i
                 </button>,
