@@ -8,6 +8,10 @@ class App extends Component {
     super(props);
 
     this.state = {
+      otherProps: {
+        actionPerformed: this.handleActionPerformed,
+        currentSelectedItem: null
+      },
       searchString: '',
       searchFocusIndex: 0,
       searchFoundCount: null,
@@ -48,6 +52,16 @@ class App extends Component {
     this.updateTreeData = this.updateTreeData.bind(this);
     this.expandAll = this.expandAll.bind(this);
     this.collapseAll = this.collapseAll.bind(this);
+
+    const self = this;
+    this.handleActionPerformed = (element) => {
+      const { treeData, otherProps } = self.state;
+      const treeDataClone = treeData.slice(0);
+      const currentSelectedItem = treeDataClone.find((x) => x.title === element)
+      const newOtherProps = Object.assign({ }, otherProps);
+      newOtherProps.currentSelectedItem = currentSelectedItem;
+      this.setState({ otherProps: newOtherProps });
+    }
   }
 
   updateTreeData(treeData) {
@@ -77,6 +91,7 @@ class App extends Component {
       searchString,
       searchFocusIndex,
       searchFoundCount,
+      otherProps
     } = this.state;
 
     const alertNodeInfo = ({ node, path, treeIndex }) => {
@@ -206,45 +221,7 @@ class App extends Component {
                       F
                     </div>,
                   ],
-              buttons: [
-                <button
-                  style={{
-                    padding: 0,
-                    borderRadius: '100%',
-                    backgroundColor: 'gray',
-                    color: 'white',
-                    width: 16,
-                    height: 16,
-                    border: 0,
-                    fontWeight: 100,
-                  }}
-                  onClick={() => {
-                    let clonedTree =treeData.slice(0);
-                    console.log(rowInfo);
-                    if (rowInfo.node.isDirectory)
-                    {
-                      console.log(treeData.length);
-                      for (let i =0; i < treeData.length; i+= 1)
-                      {
-                        const directory = clonedTree[i];
-                        console.log(directory);                        
-                        if (directory.title === rowInfo.node.title)
-                        {
-                          clonedTree.splice(i, 1);
-                          console.log("remove element")                          
-                          break;
-                        }
-                      }
-                    }
-
-                    this.setState({treeData: clonedTree})
-                    console.log(clonedTree);
-                  }}
-                  // on x click remove the element from state collection
-                >
-                  i
-                </button>,
-              ],
+              otherProps: {otherProps},
             })}
           />
         </div>

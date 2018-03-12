@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Dropdown, Menu} from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import styles from './node-content-renderer.scss';
 
@@ -20,7 +21,6 @@ class FileThemeNodeContentRenderer extends Component {
       mouseInside: false
     };
   }
-  
 
   render() {
     const {
@@ -54,8 +54,20 @@ class FileThemeNodeContentRenderer extends Component {
       ...otherProps  
     } = this.props;
     const nodeTitle = title || node.title;
+    const { actionPerformed } = otherProps.otherProps.otherProps
+    console.log(actionPerformed);
+    const dropDownOpened = (e, data) =>
+    {
+      this.setState({ dropOpened: true});
+      actionPerformed(data.name);
+    };
 
-    const { mouseInside } = this.state;
+    const dropDownClosed = (e, data) => 
+    {
+      this.setState({ dropOpened: false});
+    };
+
+    const { mouseInside, dropOpened } = this.state;
 
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node);
     const isLandingPadActive = !didDrop && isDragging;
@@ -101,10 +113,15 @@ class FileThemeNodeContentRenderer extends Component {
       }
     });
 
+    const options = [
+      { key: "delete", text: "Delete", value: "duplicate" },
+      { key: "duplicate", text: "Duplicate", value: "duplicate" },
+    ];
+
     const nodeContent = (
-      <div style={{ height: '100%' }} onMouseEnter={() => { this.setState({ mouseInside: true }); return console.log("node content mouse enter");}}
-        onMouseLeave={() => {  this.setState({ mouseInside: false }); return console.log("node content mouse leave"); }}
-        {...otherProps}>
+      <div style={{ height: '100%' }} onMouseEnter={() => { this.setState({ mouseInside: true }); }}
+        onMouseLeave={() => { this.setState({ mouseInside: false });  }}
+        >
         {toggleChildrenVisibility &&
           node.children &&
           node.children.length > 0 && (
@@ -180,16 +197,17 @@ class FileThemeNodeContentRenderer extends Component {
                     </span>
                   </div>
                   
-                  {mouseInside &&
+                  {(mouseInside || dropOpened) &&
                   <div className={styles.rowToolbar} >
-                    {buttons.map((btn, index) => (
                       <div
-                        key={index} // eslint-disable-line react/no-array-index-key
                         className={styles.toolbarButton}
                       >
-                        {btn}
+                        <Dropdown name={nodeTitle} onOpen={dropDownOpened} onClose={dropDownClosed} text="...">
+                          <Dropdown.Menu>
+                            {options.map(item => <Dropdown.Item key={item.key} text={item.text} />)}
+                          </Dropdown.Menu>
+                        </Dropdown>
                       </div>
-                    ))}
                   </div>}
                 </div>
               </div>
@@ -221,7 +239,6 @@ FileThemeNodeContentRenderer.defaultProps = {
   swapLength: null,
   title: null,
   toggleChildrenVisibility: null,
-
 };
 
 FileThemeNodeContentRenderer.propTypes = {

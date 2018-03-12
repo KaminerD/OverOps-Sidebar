@@ -41,6 +41,7 @@ class FileThemeTreeNodeRenderer extends Component {
       </div>
     );
   }
+  
 }
 
 FileThemeTreeNodeRenderer.defaultProps = {
@@ -71,6 +72,8 @@ FileThemeTreeNodeRenderer.propTypes = {
 
   // used in dndManager
   getPrevRow: PropTypes.func.isRequired,
+  onMouseEnter: PropTypes.func.isRequired,
+  onMouseLeave: PropTypes.func.isRequired,
   node: PropTypes.shape({}).isRequired,
   path: PropTypes.arrayOf(
     PropTypes.oneOfType([PropTypes.string, PropTypes.number])
