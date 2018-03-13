@@ -7,11 +7,14 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    this.updateTreeData = this.updateTreeData.bind(this);
+    this.expandAll = this.expandAll.bind(this);
+    this.collapseAll = this.collapseAll.bind(this);
+    this.handleDropdownOpened = this.handleDropdownOpened.bind(this)
+    
     this.state = {
-      otherProps: {
-        actionPerformed: this.handleActionPerformed,
-        currentSelectedItem: null
-      },
+      dropDownFunc: this.handleDropdownOpened,
+      dropDownElement: null,
       searchString: '',
       searchFocusIndex: 0,
       searchFoundCount: null,
@@ -49,23 +52,18 @@ class App extends Component {
       ],
     };
 
-    this.updateTreeData = this.updateTreeData.bind(this);
-    this.expandAll = this.expandAll.bind(this);
-    this.collapseAll = this.collapseAll.bind(this);
-
-    const self = this;
-    this.handleActionPerformed = (element) => {
-      const { treeData, otherProps } = self.state;
-      const treeDataClone = treeData.slice(0);
-      const currentSelectedItem = treeDataClone.find((x) => x.title === element)
-      const newOtherProps = Object.assign({ }, otherProps);
-      newOtherProps.currentSelectedItem = currentSelectedItem;
-      this.setState({ otherProps: newOtherProps });
-    }
   }
 
   updateTreeData(treeData) {
     this.setState({ treeData });
+  }
+
+  handleDropdownOpened(dropElement)
+  {
+      const { treeData, dropDownFunc } = this.state;
+      const treeDataClone = treeData.slice(0);
+      const dropDownElement = treeDataClone.find((x) => x.title === dropElement)
+      this.setState({ dropDownElement });
   }
 
   expand(expanded) {
@@ -91,7 +89,8 @@ class App extends Component {
       searchString,
       searchFocusIndex,
       searchFoundCount,
-      otherProps
+      dropDownFunc,
+      dropDownElement
     } = this.state;
 
     const alertNodeInfo = ({ node, path, treeIndex }) => {
@@ -221,7 +220,8 @@ class App extends Component {
                       F
                     </div>,
                   ],
-              otherProps: {otherProps},
+                dropDownFunc: {dropDownFunc},
+                dropDownElement: {dropDownElement}
             })}
           />
         </div>

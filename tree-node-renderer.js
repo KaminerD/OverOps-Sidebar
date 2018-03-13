@@ -21,11 +21,10 @@ class FileThemeTreeNodeRenderer extends Component {
       getPrevRow, // Delete from otherProps
       node, // Delete from otherProps
       path, // Delete from otherProps
-      ...otherProps
     } = this.props;
 
     return connectDropTarget(
-      <div {...otherProps} className={styles.node}>
+      <div className={styles.node}>
         {Children.map(children, child =>
           cloneElement(child, {
             isOver,

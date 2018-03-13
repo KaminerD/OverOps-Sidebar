@@ -22,6 +22,12 @@ class FileThemeNodeContentRenderer extends Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log("should update invoked");
+    console.log(this.state);
+    return true;
+  }
+
   render() {
     const {
       scaffoldBlockPxWidth,
@@ -51,20 +57,19 @@ class FileThemeNodeContentRenderer extends Component {
       treeId, // Not needed, but preserved for other renderers
       isOver, // Not needed, but preserved for other renderers
       parentNode, // Needed for dndManager
-      ...otherProps  
     } = this.props;
     const nodeTitle = title || node.title;
-    const { actionPerformed } = otherProps.otherProps.otherProps
-    console.log(actionPerformed);
+    const { dropDownFunc } = this.props.dropDownFunc;
+    const { dropDownElement } = this.props.dropDownElement;
     const dropDownOpened = (e, data) =>
     {
-      this.setState({ dropOpened: true});
-      actionPerformed(data.name);
+      console.log("drop opened");
+      dropDownFunc(data.name);
     };
 
     const dropDownClosed = (e, data) => 
     {
-      this.setState({ dropOpened: false});
+      dropDownFunc(null);
     };
 
     const { mouseInside, dropOpened } = this.state;
@@ -119,8 +124,16 @@ class FileThemeNodeContentRenderer extends Component {
     ];
 
     const nodeContent = (
-      <div style={{ height: '100%' }} onMouseEnter={() => { this.setState({ mouseInside: true }); }}
-        onMouseLeave={() => { this.setState({ mouseInside: false });  }}
+      <div style={{ height: '100%' }} onMouseEnter={() => { 
+        console.log("props");
+        console.log(this.props);
+        if (this.state.mouseInside != true && this.props.dropDownElement.dropDownElement == null)
+        {
+          console.log("setting state to true")
+          this.setState({ mouseInside: true }); 
+        }}
+        }
+        onMouseLeave={() => { if (this.state.mouseInside != false) { console.log("setting status to false"); this.setState({ mouseInside: false }); } }}
         >
         {toggleChildrenVisibility &&
           node.children &&
@@ -197,7 +210,7 @@ class FileThemeNodeContentRenderer extends Component {
                     </span>
                   </div>
                   
-                  {(mouseInside || dropOpened) &&
+                  {(((mouseInside) && !dropDownElement) || (dropDownElement && dropDownElement.title == nodeTitle)) &&
                   <div className={styles.rowToolbar} >
                       <div
                         className={styles.toolbarButton}
